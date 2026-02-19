@@ -1,37 +1,25 @@
 class Solution:
     def sortArray(self, nums: List[int]) -> List[int]:
-        # Вспомогательная функция для просеивания (восстановления свойства кучи)
-        def heapify(n, i):
-            largest = i          # Изначально считаем корень самым большим
-            left = 2 * i + 1     # Индекс левого потомка
-            right = 2 * i + 2    # Индекс правого потомка
-            
-            # Если левый потомок существует и он больше корня
-            if left < n and nums[left] > nums[largest]:
-                largest = left
-                
-            # Если правый потомок существует и он больше текущего максимума
-            if right < n and nums[right] > nums[largest]:
-                largest = right
-                
-            # Если самый большой элемент не корень, меняем их местами
-            if largest != i:
-                nums[i], nums[largest] = nums[largest], nums[i]
-                # Рекурсивно просеиваем дальше
-                heapify(n, largest)
-
         n = len(nums)
-        
-        # 1. Построение Max-Heap (максимальной кучи)
-        # Идем с середины массива к началу
-        for i in range(n // 2 - 1, -1, -1):
-            heapify(n, i)
-            
-        # 2. Извлекаем элементы из кучи по одному
-        for i in range(n - 1, 0, -1):
-            # Перемещаем текущий корень (он же самый большой элемент) в самый конец
-            nums[i], nums[0] = nums[0], nums[i]
-            # Восстанавливаем кучу для оставшейся части массива
-            heapify(i, 0)
+        def sift_down(start, end):
+            root = start
+            while True:
+                child = 2 * root + 1
+                if child > end: 
+                    break
+                if child + 1 <= end and nums[child] < nums[child + 1]:
+                    child += 1
+                if nums[root] < nums[child]:
+                    nums[root], nums[child] = nums[child], nums[root]
+                    root = child
+                else:
+                    break
+        for start in range((n - 2) // 2, -1, -1):
+            sift_down(start, n - 1)
+        for end in range(n - 1, 0, -1):
+            nums[end], nums[0] = nums[0], nums[end]
+            sift_down(0, end - 1)
             
         return nums
+import sys
+input = sys.stdin.read
